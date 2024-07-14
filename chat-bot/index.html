@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        
+        body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: skyblue;
+    margin: 0;
+}
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 750px;
+    height: 70vh;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin: 5rem 24rem;
+}
+.chat-header {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+.chat-window {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.input-container {
+    display: flex;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fafafa;
+}
+.input-container input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    margin-right: 10px;
+    font-size: 14px;
+}
+.input-container button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+.input-container button:hover {
+    background-color: #0056b3;
+}
+.message {
+    max-width: 80%;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 15px;
+    display: inline-block;
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.user-message {
+    background-color: #d1e7dd;
+    align-self: flex-end;
+    border-bottom-right-radius: 0;
+}
+.bot-message {
+    background-color: #f8d7da;
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+}
+.loading {
+    display: flex;
+    align-items: center;
+}
+.loading span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background-color: #333;
+    border-radius: 50%;
+    animation: loading 1s infinite alternate;
+}
+.loading span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.loading span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+@keyframes loading {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.5);
+    }
+}
+
+/* Navbar Styles */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.nav .logo {
+    height: 40px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav-links ul li {
+    margin: 0 15px;
+}
+
+.nav-links ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.nav-links ul li a:hover {
+    color: #ffdd57;
+}
+
+.hamburger {
+    display: none;
+    cursor: pointer;
+}
+
+.hamburger svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+
+.cancel {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-links ul {
+        flex-direction: column;
+        background-color: #007bff;
+        position: fixed;
+        top: 60px;
+        right: -100%;
+        width: 100%;
+        height: calc(100% - 60px);
+        transition: right 0.3s ease;
+    }
+
+    .nav-links ul li {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .nav-links ul.active {
+        right: 0;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .hamburger .burger {
+        display: block;
+    }
+
+    .hamburger .cancel {
+        display: none;
+    }
+
+    .hamburger.active .burger {
+        display: none;
+    }
+
+    .hamburger.active .cancel {
+        display: block;
+    }
+}
+
+        
+    </style>
+</head>
+<body>
+    <!-- <div class="loading-wrapper">
+        <img src="../images//" id="loading"/>
+      </div> -->
+    
+      <!-- Back to top button -->
+      <div id="back-top-div" class="back-top-wrap">
+        <i class="fas fa-arrow-up"></i>
+      </div>
+      <header>
+        <nav class="nav" id="nav">
+          <div>
+            <a class="navbar-brand" href="#!"> <img src="../images/logo.png" alt="Logo" class="logo" /></a>
+          </div>
+          <div class="nav-links" id="navLinks">
+            <ul class="links" id="navmenu">
+              <li><a href="#">HOME</a></li>
+              <li><a href="#about">ABOUT</a></li>
+              <li><a href="#services">SERVICES </a></li>
+              <li><a href="/therapy/contact.html">CONTACT US </a></li>
+            </ul>
+          </div>
+          <div class="hamburger" id="ham">
+            <i class="cancel fa-solid fa-xmark"></i>
+    
+            <svg class="burger" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0 624H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0-312H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z">
+              </path>
+            </svg>
+          </div>
+        </nav>
+    <div class="chat-container">
+        <div class="chat-header">ChatBot</div>
+        <div class="chat-window" id="chat-window"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message here">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to create a new user message
+        function createUserMessage(message) {
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'user-message');
+            messageElement.textContent = message;
+            return messageElement;
+        }
+
+        // Function to create a new bot message
+        function createBotMessage(message) {
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'bot-message');
+            messageElement.textContent = message;
+            return messageElement;
+        }
+
+        // Function to create a loading message
+        function createLoadingMessage() {
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'bot-message', 'loading');
+            messageElement.innerHTML = '<span></span><span></span><span></span>';
+            return messageElement;
+        }
+
+        // Function to handle user input
+        async function handleUserInput() {
+            var userInput = document.getElementById('user-input').value;
+            if (!userInput.trim()) return;
+
+            // Display the user message in the chat window
+            var chatWindow = document.getElementById('chat-window');
+            chatWindow.appendChild(createUserMessage(userInput));
+            document.getElementById('user-input').value = '';  // Clear the input field
+
+            // Display loading message
+            var loadingMessage = createLoadingMessage();
+            chatWindow.appendChild(loadingMessage);
+            chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to the bottom
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': '74e08c8d1dmshc3c3b3d2a461171p1baf7fjsnd8f3e40e57e1',
+                    'x-rapidapi-host': 'open-ai21.p.rapidapi.com',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: [
+                        {
+                            role: 'user',
+                            content: userInput
+                        }
+                    ]
+                })
+            };
+
+            try {
+                const response = await fetch('https://open-ai21.p.rapidapi.com/conversationpalm2', options);
+                const result = await response.json();
+                // Extract the bot message
+                const botMessage = result.BOT || "Error: no response"; // Extract the bot's message
+                chatWindow.removeChild(loadingMessage); // Remove the loading message
+                chatWindow.appendChild(createBotMessage(botMessage));
+                chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to the bottom
+            } catch (err) {
+                console.log(err);
+                chatWindow.removeChild(loadingMessage); // Remove the loading message in case of error
+                chatWindow.appendChild(createBotMessage("Error: Unable to fetch response."));
+            }
+        }
+
+        // Event listener for send button
+        document.getElementById('send-btn').addEventListener('click', handleUserInput);
+
+        // Event listener for Enter key press
+        document.getElementById('user-input').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                handleUserInput();
+            }
+        });
+    </script>
+</body>
+</html>
